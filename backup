@@ -1,0 +1,83 @@
+/* io.on('connect', socket => {
+    
+    function init(call) {
+        unitData.set(call.from, { busy: true });
+        users[call.from].busy = true;
+
+        // find available admin, else queue
+        const adminId = Object.keys(users).find(q => {
+            return !q.busy;
+        });
+
+        if (!adminId) {
+            queue.push(call);
+            return io.to(call.from).emit('call-request-queue');
+        }
+
+        users[adminId].busy = true;
+
+        io.to(users[adminId].id).emit('call-request-ring', {
+            signal: data.signal,
+            from: data.from
+        });
+        console.log('ringing admin');
+    };
+
+    socket.on('addAdmin', id => {
+        users[id] = {
+            id: socket.id,
+            busy: false,
+            admin: true
+        };
+
+        io.emit('users', users);
+
+        console.log('Add admin:', id);
+    });
+    
+    socket.on('addUser', id => {
+        users[id] = {
+            id: socket.id,
+            busy: false
+        };
+
+        io.emit('users', users);
+
+        console.log('Add lift:', id);
+    });
+
+    socket.on('requestUsers', () => {
+        io.emit('users', users);
+    });
+
+    socket.on('getAvailableAdmin', () => {
+        const list = Object.keys(users).filter(a => (!users[a].busy && users[a].admin));
+        socket.emit('availableAdmins', {
+            list
+        });
+    });
+
+    socket.on('emergency-btn', id => {
+        io.to(users[id].id).emit('emergency-start');
+    });
+
+    socket.on('callRequest', data => {
+        initCall(data);
+    });
+
+    socket.on('callAccept', data => {
+        io.to(users[data.to].id).emit('callAccepted', data.signal);
+        console.log('Call accepted', data.to);
+    });
+
+    socket.on('callEnd', id => {
+        io.to(users[id[0]].id).emit('emergency-end');
+        io.to(users[id[1]].id).emit('emergency-end');
+
+        // connect to queueing user, if any
+        if (queue.length > 0) {
+            initCall(queue.shift());
+        }
+    });
+});
+ */
